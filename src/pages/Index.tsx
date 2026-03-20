@@ -1,14 +1,48 @@
-// Update this page (the content is just a fallback if you fail to update the page)
+import { useState } from 'react';
+import MenuScreen from '@/components/game/MenuScreen';
+import GameScreen from '@/components/game/GameScreen';
+import RulesScreen from '@/components/game/RulesScreen';
+import SettingsScreen from '@/components/game/SettingsScreen';
 
-const Index = () => {
+export type Screen = 'menu' | 'game' | 'rules' | 'settings';
+
+export interface GameSettings {
+  volume: number;
+  difficulty: 'easy' | 'normal' | 'hard';
+  showFps: boolean;
+}
+
+export default function Index() {
+  const [screen, setScreen] = useState<Screen>('menu');
+  const [settings, setSettings] = useState<GameSettings>({
+    volume: 70,
+    difficulty: 'normal',
+    showFps: false,
+  });
+  const [highScore, setHighScore] = useState(0);
+
   return (
-    <div className="min-h-screen flex items-center justify-center bg-gray-100">
-      <div className="text-center">
-        <h1 className="text-4xl font-bold mb-4 color-black text-black">Добро пожаловать!</h1>
-        <p className="text-xl text-gray-600">тут будет отображаться ваш проект</p>
-      </div>
+    <div className="game-root">
+      {screen === 'menu' && (
+        <MenuScreen onNavigate={setScreen} highScore={highScore} />
+      )}
+      {screen === 'game' && (
+        <GameScreen
+          settings={settings}
+          onBack={() => setScreen('menu')}
+          onNewHighScore={(s) => setHighScore(Math.max(highScore, s))}
+        />
+      )}
+      {screen === 'rules' && (
+        <RulesScreen onBack={() => setScreen('menu')} />
+      )}
+      {screen === 'settings' && (
+        <SettingsScreen
+          settings={settings}
+          onChange={setSettings}
+          onBack={() => setScreen('menu')}
+        />
+      )}
     </div>
   );
-};
-
-export default Index;
+}
