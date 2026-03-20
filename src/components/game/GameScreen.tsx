@@ -118,56 +118,213 @@ export default function GameScreen({ settings, onBack, onNewHighScore }: Props) 
     if (invincible > 0 && Math.floor(invincible / 4) % 2 === 0) return;
 
     const flowers = ['🌸', '🌺', '🌼', '🌻', '💐'];
-    const fw = ducking ? 6 : 8;
-    const fh = ducking ? 4 : 10;
 
     ctx.save();
-    // Shadow
-    ctx.fillStyle = 'rgba(0,0,0,0.3)';
-    ctx.fillRect(x - fw, y + (ducking ? 16 : 38), fw * 2, 4);
-
-    // Flower bouquet above head
-    ctx.font = `${ducking ? 14 : 18}px serif`;
-    ctx.textAlign = 'center';
-    ctx.fillText(flowers[flower % flowers.length], x, y - (ducking ? 0 : 4));
-
-    // Head (pixel)
-    ctx.fillStyle = '#FDBCB4';
-    ctx.fillRect(x - 6, y + (ducking ? 8 : 4), 12, 11);
-    // Eyes
-    ctx.fillStyle = '#2d1a00';
-    ctx.fillRect(x - 3, y + (ducking ? 10 : 6), 2, 2);
-    ctx.fillRect(x + 2, y + (ducking ? 10 : 6), 2, 2);
-    // Smile
-    ctx.fillRect(x - 2, y + (ducking ? 14 : 11), 4, 1);
+    ctx.imageSmoothingEnabled = false;
 
     if (!ducking) {
-      // Body
-      ctx.fillStyle = '#e74c3c';
-      ctx.fillRect(x - 6, y + 15, 12, 14);
-      // Belt
-      ctx.fillStyle = '#8B4513';
-      ctx.fillRect(x - 6, y + 25, 12, 3);
+      // === SHADOW ===
+      ctx.fillStyle = 'rgba(0,0,0,0.25)';
+      ctx.fillRect(x - 8, y + 40, 16, 3);
 
-      // Legs animation
-      ctx.fillStyle = '#2980b9';
+      // === BOUQUET (above head, held in right hand) ===
+      // Stems
+      ctx.fillStyle = '#4a7c3f';
+      ctx.fillRect(x + 2, y - 6, 2, 10);
+      ctx.fillRect(x + 5, y - 4, 2, 8);
+      ctx.fillRect(x - 1, y - 3, 2, 7);
+      // Flowers
+      const flowerColors = [
+        ['#ff6b9d', '#ff9ec4'], // pink
+        ['#ff4444', '#ff8888'], // red
+        ['#ffcc00', '#ffee88'], // yellow
+        ['#ff69b4', '#ffaad4'], // pink2
+        ['#ff8c00', '#ffbb55'], // orange
+      ];
+      const fc = flowerColors[flower % flowerColors.length];
+      // Flower 1 (center)
+      ctx.fillStyle = fc[0];
+      ctx.fillRect(x + 1, y - 12, 4, 4);
+      ctx.fillStyle = fc[1];
+      ctx.fillRect(x + 2, y - 11, 2, 2);
+      // Flower 2 (right)
+      ctx.fillStyle = flowerColors[(flower + 1) % 5][0];
+      ctx.fillRect(x + 5, y - 10, 3, 3);
+      ctx.fillStyle = flowerColors[(flower + 1) % 5][1];
+      ctx.fillRect(x + 6, y - 9, 1, 1);
+      // Flower 3 (left)
+      ctx.fillStyle = flowerColors[(flower + 2) % 5][0];
+      ctx.fillRect(x - 2, y - 9, 3, 3);
+      ctx.fillStyle = '#22aa22';
+      ctx.fillRect(x, y - 6, 2, 2);
+      // Wrap ribbon
+      ctx.fillStyle = '#fff8dc';
+      ctx.fillRect(x + 1, y - 2, 5, 2);
+
+      // === HEAD ===
+      ctx.fillStyle = '#f5c5a3';
+      ctx.fillRect(x - 6, y + 2, 12, 12);
+      // Head sides (rounded pixel look)
+      ctx.fillRect(x - 7, y + 3, 2, 9);
+      ctx.fillRect(x + 5, y + 3, 2, 9);
+
+      // === BROWN BOB HAIR (карé) ===
+      ctx.fillStyle = '#6b3a2a';
+      // Top hair
+      ctx.fillRect(x - 7, y - 1, 14, 5);
+      // Left side bob (falls to jaw)
+      ctx.fillRect(x - 8, y + 3, 3, 10);
+      // Right side bob
+      ctx.fillRect(x + 5, y + 3, 3, 10);
+      // Hair highlights
+      ctx.fillStyle = '#8b5a3a';
+      ctx.fillRect(x - 4, y - 1, 6, 2);
+      ctx.fillRect(x - 6, y + 1, 2, 4);
+
+      // === EYES (brown) ===
+      ctx.fillStyle = '#3d1f00';
+      ctx.fillRect(x - 4, y + 7, 3, 3);
+      ctx.fillRect(x + 1, y + 7, 3, 3);
+      // Pupils
+      ctx.fillStyle = '#6b3300';
+      ctx.fillRect(x - 3, y + 8, 2, 2);
+      ctx.fillRect(x + 2, y + 8, 2, 2);
+      // Eye shine
+      ctx.fillStyle = '#fff';
+      ctx.fillRect(x - 2, y + 7, 1, 1);
+      ctx.fillRect(x + 3, y + 7, 1, 1);
+      // Lashes
+      ctx.fillStyle = '#1a0a00';
+      ctx.fillRect(x - 5, y + 6, 1, 2);
+      ctx.fillRect(x - 4, y + 6, 3, 1);
+      ctx.fillRect(x, y + 6, 4, 1);
+      ctx.fillRect(x + 4, y + 6, 1, 2);
+
+      // === GLASSES ===
+      ctx.fillStyle = '#4a3728';
+      // Left frame
+      ctx.fillRect(x - 5, y + 6, 4, 4);
+      ctx.fillRect(x - 6, y + 7, 1, 2);
+      // Right frame
+      ctx.fillRect(x + 1, y + 6, 4, 4);
+      ctx.fillRect(x + 5, y + 7, 1, 2);
+      // Bridge
+      ctx.fillRect(x - 1, y + 8, 2, 1);
+      // Glass tint
+      ctx.fillStyle = 'rgba(100,180,255,0.18)';
+      ctx.fillRect(x - 4, y + 7, 3, 3);
+      ctx.fillRect(x + 2, y + 7, 3, 3);
+
+      // === MOUTH (smile) ===
+      ctx.fillStyle = '#c0725a';
+      ctx.fillRect(x - 2, y + 12, 4, 1);
+      ctx.fillStyle = '#e8967a';
+      ctx.fillRect(x - 1, y + 13, 2, 1);
+
+      // === BLUSH ===
+      ctx.fillStyle = 'rgba(255,120,100,0.35)';
+      ctx.fillRect(x - 6, y + 10, 3, 2);
+      ctx.fillRect(x + 3, y + 10, 3, 2);
+
+      // === BODY — teal dress / shirt ===
+      ctx.fillStyle = '#3a8a7a';
+      ctx.fillRect(x - 6, y + 14, 12, 12);
+      // Collar
+      ctx.fillStyle = '#5ab8a8';
+      ctx.fillRect(x - 2, y + 14, 4, 3);
+      ctx.fillRect(x - 1, y + 14, 2, 5);
+      // Body shading
+      ctx.fillStyle = '#2d6b5e';
+      ctx.fillRect(x + 3, y + 15, 3, 10);
+
+      // Right arm holding bouquet
+      ctx.fillStyle = '#f5c5a3';
+      ctx.fillRect(x + 5, y + 15, 3, 8);
+      ctx.fillStyle = '#3a8a7a';
+      ctx.fillRect(x + 5, y + 15, 3, 4);
+
+      // Left arm swinging
+      ctx.fillStyle = '#f5c5a3';
       if (runFrame === 0) {
-        ctx.fillRect(x - 5, y + 29, 5, 10);
-        ctx.fillRect(x + 1, y + 29, 5, 8);
+        ctx.fillRect(x - 8, y + 16, 3, 6);
       } else {
-        ctx.fillRect(x - 5, y + 29, 5, 8);
-        ctx.fillRect(x + 1, y + 29, 5, 10);
+        ctx.fillRect(x - 8, y + 18, 3, 6);
       }
-      // Shoes
-      ctx.fillStyle = '#1a1a1a';
-      ctx.fillRect(x - 6, y + 37, 6, 3);
-      ctx.fillRect(x + 1, y + 37, 6, 3);
+      ctx.fillStyle = '#3a8a7a';
+      if (runFrame === 0) {
+        ctx.fillRect(x - 8, y + 16, 3, 3);
+      } else {
+        ctx.fillRect(x - 8, y + 18, 3, 3);
+      }
+
+      // === SKIRT ===
+      ctx.fillStyle = '#2e7a6a';
+      ctx.fillRect(x - 7, y + 26, 14, 8);
+      ctx.fillStyle = '#3a8a7a';
+      ctx.fillRect(x - 7, y + 26, 14, 2);
+      ctx.fillStyle = '#1d5a4e';
+      ctx.fillRect(x - 7, y + 32, 14, 2);
+
+      // === LEGS ===
+      ctx.fillStyle = '#f5c5a3';
+      if (runFrame === 0) {
+        ctx.fillRect(x - 5, y + 34, 4, 7);
+        ctx.fillRect(x + 1, y + 34, 4, 5);
+      } else {
+        ctx.fillRect(x - 5, y + 34, 4, 5);
+        ctx.fillRect(x + 1, y + 34, 4, 7);
+      }
+
+      // === SHOES (brown) ===
+      ctx.fillStyle = '#5c3317';
+      ctx.fillRect(x - 6, y + 39, 6, 3);
+      ctx.fillRect(x + 1, y + 39, 6, 3);
+      ctx.fillStyle = '#7a4522';
+      ctx.fillRect(x - 6, y + 39, 6, 1);
+      ctx.fillRect(x + 1, y + 39, 6, 1);
+
     } else {
-      // Ducking body
-      ctx.fillStyle = '#e74c3c';
-      ctx.fillRect(x - 8, y + 16, 16, 8);
-      ctx.fillStyle = '#2980b9';
-      ctx.fillRect(x - 7, y + 20, 14, 5);
+      // === DUCKING ===
+      ctx.fillStyle = 'rgba(0,0,0,0.2)';
+      ctx.fillRect(x - 8, y + 26, 16, 3);
+
+      // Bouquet
+      ctx.fillStyle = '#4a7c3f';
+      ctx.fillRect(x + 3, y + 2, 2, 6);
+      ctx.fillStyle = '#ff6b9d';
+      ctx.fillRect(x + 2, y - 2, 4, 4);
+      ctx.fillStyle = '#ffcc00';
+      ctx.fillRect(x + 6, y, 3, 3);
+
+      // Head
+      ctx.fillStyle = '#f5c5a3';
+      ctx.fillRect(x - 6, y + 4, 12, 11);
+      // Hair
+      ctx.fillStyle = '#6b3a2a';
+      ctx.fillRect(x - 7, y + 2, 14, 4);
+      ctx.fillRect(x - 8, y + 5, 3, 8);
+      ctx.fillRect(x + 5, y + 5, 3, 8);
+      // Eyes
+      ctx.fillStyle = '#3d1f00';
+      ctx.fillRect(x - 4, y + 8, 3, 2);
+      ctx.fillRect(x + 1, y + 8, 3, 2);
+      // Glasses
+      ctx.fillStyle = '#4a3728';
+      ctx.fillRect(x - 5, y + 7, 4, 3);
+      ctx.fillRect(x + 1, y + 7, 4, 3);
+      ctx.fillRect(x - 1, y + 8, 2, 1);
+      // Body ducked
+      ctx.fillStyle = '#3a8a7a';
+      ctx.fillRect(x - 8, y + 15, 16, 8);
+      ctx.fillStyle = '#2e7a6a';
+      ctx.fillRect(x - 8, y + 20, 16, 5);
+      // Legs
+      ctx.fillStyle = '#f5c5a3';
+      ctx.fillRect(x - 6, y + 21, 5, 4);
+      ctx.fillRect(x + 1, y + 21, 5, 4);
+      ctx.fillStyle = '#5c3317';
+      ctx.fillRect(x - 7, y + 24, 6, 2);
+      ctx.fillRect(x + 1, y + 24, 6, 2);
     }
 
     ctx.restore();
@@ -285,38 +442,155 @@ export default function GameScreen({ settings, onBack, onNewHighScore }: Props) 
   }, []);
 
   const drawTarget = useCallback((ctx: CanvasRenderingContext2D, x: number) => {
-    // Target character waiting
     ctx.save();
-    ctx.font = '32px serif';
+    ctx.imageSmoothingEnabled = false;
+
+    const base = GROUND_Y;
+    const t = Date.now() / 800;
+    const bob = Math.sin(t) * 1.5; // gentle sway
+
+    // === SHADOW ===
+    ctx.fillStyle = 'rgba(0,0,0,0.22)';
+    ctx.fillRect(x - 9, base, 18, 3);
+
+    // === FLOATING HEARTS (waiting animation) ===
+    const heartT = Date.now() / 600;
+    ctx.font = '10px serif';
     ctx.textAlign = 'center';
-    // Heart
-    ctx.font = '16px serif';
-    ctx.fillText('❤', x, GROUND_Y - 55);
-    // Head
-    ctx.fillStyle = '#FDBCB4';
-    ctx.fillRect(x - 7, GROUND_Y - 50, 14, 12);
-    ctx.fillStyle = '#2d1a00';
-    ctx.fillRect(x - 3, GROUND_Y - 47, 2, 2);
-    ctx.fillRect(x + 2, GROUND_Y - 47, 2, 2);
-    ctx.fillRect(x - 2, GROUND_Y - 43, 4, 1);
-    // Dress
-    ctx.fillStyle = '#ff69b4';
-    ctx.fillRect(x - 8, GROUND_Y - 38, 16, 16);
-    ctx.fillStyle = '#ff85c2';
-    ctx.fillRect(x - 8, GROUND_Y - 38, 16, 4);
-    // Skirt
-    ctx.fillStyle = '#ff69b4';
-    ctx.fillRect(x - 10, GROUND_Y - 22, 20, 12);
-    ctx.fillStyle = '#ff85c2';
-    ctx.fillRect(x - 9, GROUND_Y - 18, 18, 4);
-    // Legs
-    ctx.fillStyle = '#FDBCB4';
-    ctx.fillRect(x - 5, GROUND_Y - 10, 4, 10);
-    ctx.fillRect(x + 2, GROUND_Y - 10, 4, 10);
-    // Shoes
-    ctx.fillStyle = '#8B4513';
-    ctx.fillRect(x - 6, GROUND_Y, 6, 3);
-    ctx.fillRect(x + 1, GROUND_Y, 6, 3);
+    ctx.globalAlpha = 0.7 + Math.sin(heartT) * 0.3;
+    ctx.fillText('♥', x - 10, base - 68 + bob - Math.sin(heartT) * 4);
+    ctx.fillText('♥', x + 10, base - 72 + bob - Math.sin(heartT + 1) * 4);
+    ctx.font = '14px serif';
+    ctx.globalAlpha = 0.9 + Math.sin(heartT + 0.5) * 0.1;
+    ctx.fillText('❤', x, base - 80 + bob - Math.sin(heartT + 0.5) * 5);
+    ctx.globalAlpha = 1;
+
+    // === HEAD ===
+    ctx.fillStyle = '#f0b98c';
+    ctx.fillRect(x - 7, base - 58 + bob, 14, 13);
+    ctx.fillRect(x - 8, base - 56 + bob, 2, 10);
+    ctx.fillRect(x + 6, base - 56 + bob, 2, 10);
+
+    // === DARK BOB HAIR (тёмное карé) ===
+    ctx.fillStyle = '#2a1a10';
+    // Top
+    ctx.fillRect(x - 8, base - 62 + bob, 16, 6);
+    // Left side — straight bob to chin
+    ctx.fillRect(x - 9, base - 57 + bob, 3, 12);
+    ctx.fillRect(x - 8, base - 62 + bob, 3, 4);
+    // Right side
+    ctx.fillRect(x + 6, base - 57 + bob, 3, 12);
+    ctx.fillRect(x + 5, base - 62 + bob, 3, 4);
+    // Hair shine highlight
+    ctx.fillStyle = '#3d2818';
+    ctx.fillRect(x - 3, base - 62 + bob, 6, 2);
+    ctx.fillRect(x - 6, base - 60 + bob, 2, 3);
+    // Fringe / bangs
+    ctx.fillStyle = '#2a1a10';
+    ctx.fillRect(x - 5, base - 62 + bob, 10, 3);
+    ctx.fillRect(x - 4, base - 64 + bob, 8, 2);
+
+    // === EYES (карие — brown) ===
+    ctx.fillStyle = '#3d1f00';
+    ctx.fillRect(x - 5, base - 52 + bob, 4, 4);
+    ctx.fillRect(x + 1, base - 52 + bob, 4, 4);
+    // Iris — rich brown
+    ctx.fillStyle = '#7a4010';
+    ctx.fillRect(x - 4, base - 51 + bob, 3, 3);
+    ctx.fillRect(x + 2, base - 51 + bob, 3, 3);
+    // Pupil
+    ctx.fillStyle = '#1a0800';
+    ctx.fillRect(x - 3, base - 51 + bob, 2, 2);
+    ctx.fillRect(x + 2, base - 51 + bob, 2, 2);
+    // Shine
+    ctx.fillStyle = '#fff';
+    ctx.fillRect(x - 3, base - 52 + bob, 1, 1);
+    ctx.fillRect(x + 3, base - 52 + bob, 1, 1);
+    // Lashes
+    ctx.fillStyle = '#1a0800';
+    ctx.fillRect(x - 6, base - 53 + bob, 5, 1);
+    ctx.fillRect(x + 1, base - 53 + bob, 5, 1);
+    ctx.fillRect(x - 6, base - 53 + bob, 1, 2);
+    ctx.fillRect(x + 5, base - 53 + bob, 1, 2);
+
+    // === NOSE (tiny) ===
+    ctx.fillStyle = '#d4917a';
+    ctx.fillRect(x - 1, base - 48 + bob, 2, 1);
+
+    // === LIPS ===
+    ctx.fillStyle = '#d45a70';
+    ctx.fillRect(x - 3, base - 46 + bob, 6, 2);
+    ctx.fillStyle = '#e87090';
+    ctx.fillRect(x - 2, base - 46 + bob, 4, 1);
+
+    // === BLUSH ===
+    ctx.fillStyle = 'rgba(255,130,100,0.3)';
+    ctx.fillRect(x - 7, base - 49 + bob, 3, 2);
+    ctx.fillRect(x + 4, base - 49 + bob, 3, 2);
+
+    // === NECK ===
+    ctx.fillStyle = '#f0b98c';
+    ctx.fillRect(x - 2, base - 45 + bob, 4, 4);
+
+    // === DRESS — lavender/purple (Stardew style) ===
+    ctx.fillStyle = '#7c5cbf';
+    ctx.fillRect(x - 8, base - 41 + bob, 16, 15);
+    // Collar / neckline detail
+    ctx.fillStyle = '#9b7fdb';
+    ctx.fillRect(x - 3, base - 41 + bob, 6, 3);
+    ctx.fillRect(x - 2, base - 41 + bob, 4, 6);
+    // Dress shading
+    ctx.fillStyle = '#5e3fa8';
+    ctx.fillRect(x + 4, base - 40 + bob, 4, 13);
+    // Small bow
+    ctx.fillStyle = '#e8a0c0';
+    ctx.fillRect(x - 2, base - 38 + bob, 4, 2);
+    ctx.fillStyle = '#ff80aa';
+    ctx.fillRect(x - 1, base - 38 + bob, 2, 2);
+
+    // === ARMS (reaching out slightly) ===
+    ctx.fillStyle = '#f0b98c';
+    // Left arm (waving)
+    const armWave = Math.sin(t * 2) * 3;
+    ctx.fillRect(x - 11, base - 39 + bob + armWave, 4, 7);
+    ctx.fillStyle = '#7c5cbf';
+    ctx.fillRect(x - 11, base - 39 + bob + armWave, 4, 3);
+    // Right arm
+    ctx.fillStyle = '#f0b98c';
+    ctx.fillRect(x + 7, base - 39 + bob, 4, 7);
+    ctx.fillStyle = '#7c5cbf';
+    ctx.fillRect(x + 7, base - 39 + bob, 4, 3);
+
+    // === SKIRT flared ===
+    ctx.fillStyle = '#6a4db0';
+    ctx.fillRect(x - 10, base - 26 + bob, 20, 14);
+    ctx.fillStyle = '#7c5cbf';
+    ctx.fillRect(x - 10, base - 26 + bob, 20, 3);
+    // Skirt hem detail
+    ctx.fillStyle = '#9b7fdb';
+    ctx.fillRect(x - 10, base - 14 + bob, 20, 2);
+    // Skirt folds
+    ctx.fillStyle = '#5e3fa8';
+    ctx.fillRect(x - 4, base - 25 + bob, 3, 12);
+    ctx.fillRect(x + 3, base - 25 + bob, 3, 12);
+
+    // === LEGS ===
+    ctx.fillStyle = '#f0b98c';
+    ctx.fillRect(x - 5, base - 12 + bob, 4, 12);
+    ctx.fillRect(x + 1, base - 12 + bob, 4, 12);
+
+    // === SHOES (dark, Stardew style) ===
+    ctx.fillStyle = '#2a1a10';
+    ctx.fillRect(x - 6, base - 1 + bob, 7, 4);
+    ctx.fillRect(x + 0, base - 1 + bob, 7, 4);
+    ctx.fillStyle = '#3d2818';
+    ctx.fillRect(x - 6, base - 1 + bob, 7, 1);
+    ctx.fillRect(x + 0, base - 1 + bob, 7, 1);
+    // Heel
+    ctx.fillStyle = '#1a0e08';
+    ctx.fillRect(x - 6, base + 2 + bob, 3, 1);
+    ctx.fillRect(x + 4, base + 2 + bob, 3, 1);
+
     ctx.restore();
   }, []);
 

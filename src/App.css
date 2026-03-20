@@ -208,6 +208,14 @@ body {
   font-size: 24px;
 }
 
+.sprite-label {
+  font-family: "Press Start 2P", monospace;
+  font-size: 6px;
+  color: rgba(255, 255, 255, 0.5);
+  text-align: center;
+  margin-top: 2px;
+}
+
 .dotted-line {
   flex: 1;
   border-bottom: 3px dashed rgba(255, 255, 255, 0.3);
