@@ -1,5 +1,6 @@
 import { useEffect, useRef, useState, useCallback } from 'react';
 import { GameSettings } from '@/pages/Index';
+import { useGameMusic } from './useGameMusic';
 
 interface Props {
   settings: GameSettings;
@@ -73,9 +74,12 @@ export default function GameScreen({ settings, onBack, onNewHighScore }: Props) 
   const [displayScore, setDisplayScore] = useState(0);
   const [lives, setLives] = useState(3);
   const [fps, setFps] = useState(0);
+  const [musicPlaying, setMusicPlaying] = useState(true);
   const rafRef = useRef(0);
   const keysRef = useRef({ up: false, down: false });
   const jumpedRef = useRef(false);
+
+  useGameMusic(settings.volume, musicPlaying);
 
   const spawnObstacle = useCallback((s: typeof stateRef.current) => {
     const types: ObstacleType[] = ['fence', 'pit', 'platform', 'enemy'];
@@ -594,9 +598,10 @@ export default function GameScreen({ settings, onBack, onNewHighScore }: Props) 
     ctx.restore();
   }, []);
 
-  const drawHUD = useCallback((ctx: CanvasRenderingContext2D, score: number, lives: number, showFps: boolean, fps: number) => {
+  const drawHUD = useCallback((ctx: CanvasRenderingContext2D, score: number, livesCount: number, showFps: boolean, fpsVal: number) => {
     ctx.save();
     ctx.imageSmoothingEnabled = false;
+    // Score
     ctx.font = '10px "Press Start 2P", monospace';
     ctx.fillStyle = '#fff';
     ctx.shadowColor = '#000';
@@ -604,13 +609,23 @@ export default function GameScreen({ settings, onBack, onNewHighScore }: Props) 
     ctx.fillText(`СЧЁТ: ${score}`, 12, 22);
     // Lives as hearts
     ctx.font = '14px serif';
-    for (let i = 0; i < lives; i++) {
+    for (let i = 0; i < livesCount; i++) {
       ctx.fillText('❤', 12 + i * 20, 44);
     }
+    // Name labels
+    ctx.shadowBlur = 2;
+    ctx.font = '7px "Press Start 2P", monospace';
+    ctx.fillStyle = '#ffd6e8';
+    ctx.fillText('Настюша', 12, 58);
+    ctx.fillStyle = '#d6e8ff';
+    ctx.textAlign = 'right';
+    ctx.fillText('Ксюня ♥', W - 12, 22);
+    ctx.textAlign = 'left';
+
     if (showFps) {
-      ctx.font = '8px "Press Start 2P", monospace';
+      ctx.font = '7px "Press Start 2P", monospace';
       ctx.fillStyle = '#0f0';
-      ctx.fillText(`FPS: ${fps}`, W - 80, 22);
+      ctx.fillText(`FPS: ${fpsVal}`, W - 70, 36);
     }
     ctx.restore();
   }, []);
@@ -897,9 +912,19 @@ export default function GameScreen({ settings, onBack, onNewHighScore }: Props) 
         <div className="game-top-bar">
           <button className="pixel-btn-sm pixel-btn--red" onClick={onBack}>✕</button>
           <span className="game-score-display">СЧЁТ: {displayScore}</span>
-          <span className="lives-display">
-            {Array.from({ length: lives }).map((_, i) => <span key={i}>❤</span>)}
-          </span>
+          <div style={{ display: 'flex', alignItems: 'center', gap: 8 }}>
+            <button
+              className="pixel-btn-sm"
+              style={{ background: musicPlaying ? '#27ae60' : '#555', color: '#fff', border: '2px solid rgba(255,255,255,0.3)' }}
+              onClick={() => setMusicPlaying(m => !m)}
+              title={musicPlaying ? 'Выключить музыку' : 'Включить музыку'}
+            >
+              {musicPlaying ? '♪' : '♪̶'}
+            </button>
+            <span className="lives-display">
+              {Array.from({ length: lives }).map((_, i) => <span key={i}>❤</span>)}
+            </span>
+          </div>
         </div>
 
         <canvas
@@ -936,7 +961,7 @@ export default function GameScreen({ settings, onBack, onNewHighScore }: Props) 
             <div className="overlay-title">GAME OVER</div>
             <div className="overlay-score">СЧЁТ: {displayScore}</div>
             <div className="overlay-flowers">💔</div>
-            <p className="overlay-text">Цветы не дошли...</p>
+            <p className="overlay-text">Настюша не добежала до Ксюни...</p>
             <div className="overlay-buttons">
               <button className="pixel-btn pixel-btn--green" onClick={() => {
                 const s = stateRef.current;
@@ -968,7 +993,7 @@ export default function GameScreen({ settings, onBack, onNewHighScore }: Props) 
           <div className="overlay-box overlay-box--gold">
             <div className="overlay-title">ПОБЕДА!</div>
             <div className="overlay-flowers">💐💑💐</div>
-            <p className="overlay-text">Цветы доставлены!</p>
+            <p className="overlay-text">Настюша добежала до Ксюни! 💕</p>
             <div className="overlay-score">СЧЁТ: {displayScore}</div>
             <div className="overlay-buttons">
               <button className="pixel-btn pixel-btn--green" onClick={() => {

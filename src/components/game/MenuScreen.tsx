@@ -43,12 +43,12 @@ export default function MenuScreen({ onNavigate, highScore }: Props) {
         <div className="runner-sprite-menu">
           <div className="sprite-flower">{PIXEL_FLOWERS[flowerIdx]}</div>
           <div className="sprite-body">👩‍🦱</div>
-          <div className="sprite-label">с цветами</div>
+          <div className="sprite-label">Настюша</div>
         </div>
         <div className="dotted-line" />
         <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', gap: 2 }}>
           <div className="target-sprite">👩</div>
-          <div className="sprite-label">ждёт</div>
+          <div className="sprite-label">Ксюня</div>
         </div>
       </div>
 
