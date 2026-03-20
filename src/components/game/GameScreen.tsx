@@ -337,20 +337,88 @@ export default function GameScreen({ settings, onBack, onNewHighScore }: Props) 
   const drawObstacle = useCallback((ctx: CanvasRenderingContext2D, o: Obstacle) => {
     ctx.save();
     if (o.type === 'fence') {
-      // Fence posts
-      ctx.fillStyle = '#8B4513';
-      for (let i = 0; i < o.w; i += 8) {
-        ctx.fillRect(o.x + i, o.y, 4, o.h);
-      }
-      // Rails
-      ctx.fillStyle = '#A0522D';
-      ctx.fillRect(o.x, o.y + 4, o.w, 4);
-      ctx.fillRect(o.x, o.y + o.h - 8, o.w, 4);
-      // Top spikes
-      ctx.fillStyle = '#6B3410';
-      for (let i = 0; i < o.w; i += 8) {
-        ctx.fillRect(o.x + i + 1, o.y - 5, 2, 5);
-      }
+      // === ЛАДА КАЛИНА — зелёная пиксель-арт ===
+      const cx = o.x;
+      const cy = o.y;
+
+      // Тень под машиной
+      ctx.fillStyle = 'rgba(0,0,0,0.25)';
+      ctx.fillRect(cx + 4, cy + o.h - 2, o.w - 8, 5);
+
+      // Колёса (сначала, под кузовом)
+      ctx.fillStyle = '#1a1a1a';
+      ctx.fillRect(cx + 4, cy + o.h - 12, 12, 12);
+      ctx.fillRect(cx + o.w - 16, cy + o.h - 12, 12, 12);
+      // Диски
+      ctx.fillStyle = '#aaaaaa';
+      ctx.fillRect(cx + 7, cy + o.h - 9, 6, 6);
+      ctx.fillRect(cx + o.w - 13, cy + o.h - 9, 6, 6);
+      ctx.fillStyle = '#dddddd';
+      ctx.fillRect(cx + 9, cy + o.h - 7, 2, 2);
+      ctx.fillRect(cx + o.w - 11, cy + o.h - 7, 2, 2);
+
+      // Основной кузов — зелёный (Лада Калина цвет)
+      ctx.fillStyle = '#3a8c2f';
+      ctx.fillRect(cx + 2, cy + 12, o.w - 4, o.h - 22);
+      // Низ кузова (порог)
+      ctx.fillStyle = '#2d6e24';
+      ctx.fillRect(cx + 2, cy + o.h - 18, o.w - 4, 6);
+
+      // Крыша — чуть светлее
+      ctx.fillStyle = '#4aad3a';
+      ctx.fillRect(cx + 8, cy + 2, o.w - 18, 12);
+      // Крыша верхний блик
+      ctx.fillStyle = '#5ec44c';
+      ctx.fillRect(cx + 10, cy + 2, o.w - 22, 3);
+
+      // Лобовое стекло
+      ctx.fillStyle = '#b8e4ff';
+      ctx.fillRect(cx + o.w - 18, cy + 4, 8, 8);
+      ctx.fillStyle = 'rgba(255,255,255,0.4)';
+      ctx.fillRect(cx + o.w - 17, cy + 4, 3, 4);
+      // Заднее стекло
+      ctx.fillStyle = '#b8e4ff';
+      ctx.fillRect(cx + 8, cy + 4, 8, 8);
+      ctx.fillStyle = 'rgba(255,255,255,0.4)';
+      ctx.fillRect(cx + 9, cy + 4, 3, 4);
+
+      // Дверная линия
+      ctx.fillStyle = '#2d6e24';
+      ctx.fillRect(cx + 2, cy + 18, o.w - 4, 2);
+      ctx.fillRect(cx + o.w / 2 - 1, cy + 14, 2, o.h - 26);
+
+      // Передняя фара
+      ctx.fillStyle = '#fffde0';
+      ctx.fillRect(cx + o.w - 6, cy + 16, 4, 4);
+      ctx.fillStyle = '#ffee88';
+      ctx.fillRect(cx + o.w - 5, cy + 17, 2, 2);
+      // Задний фонарь
+      ctx.fillStyle = '#cc2200';
+      ctx.fillRect(cx + 2, cy + 14, 4, 6);
+      ctx.fillStyle = '#ff4422';
+      ctx.fillRect(cx + 3, cy + 15, 2, 4);
+
+      // Бампер передний
+      ctx.fillStyle = '#555';
+      ctx.fillRect(cx + o.w - 6, cy + o.h - 18, 6, 6);
+      ctx.fillStyle = '#777';
+      ctx.fillRect(cx + o.w - 5, cy + o.h - 17, 4, 2);
+      // Бампер задний
+      ctx.fillStyle = '#555';
+      ctx.fillRect(cx, cy + o.h - 18, 6, 6);
+
+      // Номерной знак (спереди)
+      ctx.fillStyle = '#fffde0';
+      ctx.fillRect(cx + o.w - 5, cy + o.h - 14, 5, 3);
+      ctx.fillStyle = '#1a1a99';
+      ctx.fillRect(cx + o.w - 4, cy + o.h - 13, 3, 1);
+
+      // Антенна
+      ctx.fillStyle = '#2d6e24';
+      ctx.fillRect(cx + 14, cy - 4, 1, 6);
+      ctx.fillStyle = '#888';
+      ctx.fillRect(cx + 14, cy - 8, 1, 4);
+
     } else if (o.type === 'pit') {
       // Pit - dark hole
       ctx.fillStyle = '#0a0a0a';
@@ -993,7 +1061,7 @@ export default function GameScreen({ settings, onBack, onNewHighScore }: Props) 
           <div className="overlay-box overlay-box--gold">
             <div className="overlay-title">ПОБЕДА!</div>
             <div className="overlay-flowers">💐💑💐</div>
-            <p className="overlay-text">Настюша добежала до Ксюни! 💕</p>
+            <p className="overlay-text">Тебе удалось поздравить Ксюню!</p>
             <div className="overlay-score">СЧЁТ: {displayScore}</div>
             <div className="overlay-buttons">
               <button className="pixel-btn pixel-btn--green" onClick={() => {
